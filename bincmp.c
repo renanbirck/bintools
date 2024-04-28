@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
 		printf("%s: the two files have different sizes! They must be different.", argv[0]);
 		return 1;
 	} else {
-		printf("%s: two files of size %d\n", argv[0], fs1);
+		printf("%s: two files of size %ld\n", argv[0], fs1);
 	}
 
 	fp1 = fopen(argv[1], "r");
