@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
 
 /* bincmp.c: compara dois arquivos binários, retornando os offsets e as diferenças. 
  *
@@ -38,9 +39,9 @@ unsigned long get_file_size(char *file_name) {
 int main(int argc, char *argv[]) {
 
 	unsigned long fs1 = 0, fs2 = 1;
-	unsigned long now_byte = 0;
+	unsigned long pos = 0;
 	FILE *fp1, *fp2;
-	int *fd1, *fd2;
+	char *fd1, *fd2;
 
 	if(argc != 3) {
 		printf("usage: %s file1 file2", argv[0]);
@@ -64,7 +65,7 @@ int main(int argc, char *argv[]) {
 		printf("%s: the two files have different sizes! They must be different.", argv[0]);
 		return 1;
 	} else {
-		printf("%s: two files of size %d", argv[0], fs1);
+		printf("%s: two files of size %d\n", argv[0], fs1);
 	}
 
 	fp1 = fopen(argv[1], "r");
@@ -73,12 +74,12 @@ int main(int argc, char *argv[]) {
 	fd1 = malloc(sizeof(int) * fs1);
 	fd2 = malloc(sizeof(int) * fs2);
 
-	fread(fd1, sizeof(fd1), 1, fp1);
-	fread(fd2, sizeof(fd2), 1, fp2);
+	fread(fd1, fs1, 1, fp1);
+	fread(fd2, fs2, 1, fp2);
 
-	for(now_byte = 0; now_byte < fs1; now_byte++) {
-		if(fd1[now_byte] != fd2[now_byte]) {
-			printf("%lx %c %c\n", now_byte, fd1[now_byte], fd2[now_byte]);
+	for(pos = 0; pos < fs1; pos++) {
+		if(fd1[pos] != fd2[pos]) {
+			printf("%lx %c != %c\n", pos, fd1[pos], fd2[pos]);
 		}
 	}
 }
