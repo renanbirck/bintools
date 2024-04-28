@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 	unsigned long fs1 = 0, fs2 = 1;
 	unsigned long now_byte = 0;
 	FILE *fp1, *fp2;
-	int ch1, ch2;
+	int *fd1, *fd2;
 
 	if(argc != 3) {
 		printf("usage: %s file1 file2", argv[0]);
@@ -63,17 +63,22 @@ int main(int argc, char *argv[]) {
 	if(fs1 != fs2) {
 		printf("%s: the two files have different sizes! They must be different.", argv[0]);
 		return 1;
+	} else {
+		printf("%s: two files of size %d", argv[0], fs1);
 	}
 
 	fp1 = fopen(argv[1], "r");
 	fp2 = fopen(argv[2], "r");
 
-	while(!feof(fp1) && !feof(fp2)) {
-		fread(&ch1, 1, 1, fp1);
-		fread(&ch2, 1, 1, fp2);
-		if(ch1 != ch2)
-			printf("0x%lx %c %c \n", now_byte, ch1, ch2);
+	fd1 = malloc(sizeof(int) * fs1);
+	fd2 = malloc(sizeof(int) * fs2);
 
-		now_byte++;
+	fread(fd1, sizeof(fd1), 1, fp1);
+	fread(fd2, sizeof(fd2), 1, fp2);
+
+	for(now_byte = 0; now_byte < fs1; now_byte++) {
+		if(fd1[now_byte] != fd2[now_byte]) {
+			printf("%lx %c %c\n", now_byte, fd1[now_byte], fd2[now_byte]);
+		}
 	}
 }
